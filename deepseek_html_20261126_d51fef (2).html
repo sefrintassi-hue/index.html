@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel de Monitoramento Interativo | UniAmérica</title>
+    
+    <!-- Importação das Fontes da Campanha -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=League+Gothic&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Paleta de Cores Oficial */
+        :root {
+            --verde: #00D47E;
+            --laranja: #FD7402;
+            --preto: #1E1E1E;
+            --branco: #FFFFFF;
+            --cinza-bg: #F4F5F7;
+            --cinza-borda: #E1E1E1;
+            --cinza-texto: #6B6B6B;
+            --card-bg: #FFFFFF;
+            --down-bg: #FFF1E8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'League Gothic', sans-serif;
+            background-color: var(--cinza-bg);
+            color: var(--preto);
+            line-height: 1.45;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Cabeçalho */
+        .top {
+            background: var(--preto);
+            color: var(--branco);
+            padding: 18px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .top .t { font-size: 14px; letter-spacing: .15em; color: var(--verde); font-weight: 700; text-transform: uppercase;}
+        
+        .fict {
+            background: var(--laranja);
+            color: var(--branco);
+            font-weight: 700;
+            font-size: 14px;
+            padding: 10px 28px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 56px; }
+        
+        /* Tipografia */
+        h1 { font-family: 'Anton', sans-serif; font-size: 38px; margin: 10px 0 4px; text-transform: uppercase; letter-spacing: 1px; }
+        h2 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: .08em; margin: 34px 0 12px; display: flex; align-items: center; gap: 10px; color: var(--preto); }
+        h3 { margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px;}
+        .sub { color: var(--cinza-texto); font-size: 16px; margin: 0 0 14px; }
+        
+        .tag {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 24px; height: 24px; border-radius: 50%;
+            background: var(--verde); color: var(--preto);
+            font-size: 14px; font-weight: 800; flex: none;
+        }
+
+        /* =========================================
+           SISTEMA DE ABAS (TABS) INTERATIVAS
+           ========================================= */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--cinza-borda);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            background: var(--branco);
+            border: 2px solid var(--cinza-borda);
+            color: var(--cinza-texto);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn:hover {
+            border-color: var(--preto);
+            color: var(--preto);
+        }
+        
+        .tab-btn.active {
+            background: var(--preto);
+            color: var(--branco);
+            border-color: var(--preto);
+        }
+        
+        .tab-btn.active .tag {
+            background: var(--laranja);
+            color: var(--branco);
+        }
+
+        /* Conteúdo das Abas */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards e Tabelas */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--cinza-borda);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            margin-bottom: 20px;
+        }
+
+        .tw { overflow-x: auto; border-radius: 8px; border: 1px solid var(--cinza-borda); margin-bottom: 15px;}
+        table { border-collapse: collapse; width: 100%; font-size: 15px; background: var(--card-bg); font-family: sans-serif; }
+        th { background: var(--preto); color: var(--branco); text-align: left; padding: 12px 14px; font-family: 'Bebas Neue'; font-size: 18px; letter-spacing: 1px; font-weight: normal;}
+        td { padding: 12px 14px; border-bottom: 1px solid var(--cinza-borda); vertical-align: top; }
+        tr:nth-child(even) td { background: var(--cinza-bg); }
+        td strong { font-family: 'Bebas Neue'; font-size: 18px; color: var(--preto); letter-spacing: 0.5px;}
+
+        .alert { border-left: 5px solid var(--laranja); background: var(--down-bg); border-radius: 8px; padding: 14px; margin-bottom: 10px; font-size: 15px; font-family: sans-serif;}
+        .alert b { display: block; margin-bottom: 4px; font-family: 'Bebas Neue'; font-size: 18px; letter-spacing: 0.5px; color: var(--laranja);}
+        .alert.ok { border-color: var(--verde); background: rgba(0, 212, 126, 0.1); }
+        .alert.ok b { color: #00875A; }
+
+        /* Bloco de citação para a pergunta de pesquisa */
+        blockquote {
+            border-left: 4px solid var(--cinza-texto);
+            padding-left: 15px;
+            margin: 15px 0;
+            font-style: italic;
+            color: var(--cinza-texto);
+            font-family: sans-serif;
+            font-size: 16px;
+        }
+
+        footer { font-size: 14px; color: var(--cinza-texto); margin-top: 40px; border-top: 1px solid var(--cinza-borda); padding-top: 20px; text-align: center; font-family: sans-serif;}
+    </style>
+</head>
+<body>
+
+    <div class="top">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-family: 'Anton'; font-size: 24px; color: var(--branco); letter-spacing: 1px;">Uni<span style="color:var(--verde)">América</span></span>
+            <span class="t">Media Labs P4 · Painel de Monitoramento</span>
+        </div>
+    </div>
+    <div class="fict">Clique nos botões abaixo para navegar entre as seções do painel</div>
+
+    <main>
+        <h1>Painel de Monitoramento</h1>
+        <p class="sub">Campanha de marca institucional · Metodologia Ativa (Entrega 03)</p>
+
+        <!-- ========================================= -->
+        <!-- BOTÕES DAS ABAS                           -->
+        <!-- ========================================= -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="openTab(event, 'kpis')">
+                <span class="tag">1</span> KPIs e Métricas
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'metodologia')">
+                <span class="tag">2</span> Metodologia
+            </button>
+            <button class="tab-btn" onclick="openTab(event, 'declaracoes')">
+                <span class="tag">3</span> Declarações
+            </button>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- CONTEÚDO DA ABA 1: KPIs E MÉTRICAS        -->
+        <!-- ========================================= -->
+        <div id="kpis" class="tab-content active">
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">Objetivo de Marca e KPI Principal</h3>
+                <div class="tw">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fase</th>
+                                <th>Objetivo de Marca</th>
+                                <th>KPI Principal</th>
+                                <th>Quadrante PESO</th>
+                                <th>Frequência</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Campanha completa</strong><br>Dez a Fev</td>
+                                <td>Fortalecer a associação espontânea da UniAmérica ao aprendizado por projetos, por meio da compreensão e da experiência com a metodologia ativa.</td>
+                                <td>Variação, em pontos percentuais, da associação espontânea da UniAmérica ao aprendizado por projetos (pré e pós-campanha).</td>
+                                <td>Paid, Earned, Shared e Owned. A pesquisa é conduzida pela equipe (Owned).</td>
+                                <td>KPI: pré-campanha e após o reforço.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">Métricas de Apoio por Fase</h3>
+                <p style="font-family: sans-serif; font-size: 15px; color: var(--cinza-texto); margin-bottom: 15px;">
+                    Dados operacionais que ajudam a interpretar os resultados do indicador principal; não representam novos KPIs de marca.
+                </p>
+                <div class="tw">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fase</th>
+                                <th>Métricas de Apoio</th>
+                                <th>Canais e Fontes</th>
+                                <th>Frequência</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Expectativa</strong></td>
+                                <td>Alcance, frequência dos anúncios, visualizações completas do teaser e acessos por QR Code.</td>
+                                <td>Paid / Shared | Meta Ads, TikTok Ads e relatórios dos links rastreados.</td>
+                                <td>Semanal; pesquisa inicial antes da divulgação.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Lançamento</strong></td>
+                                <td>Menções à metodologia, comentários qualificados, compartilhamentos e salvamentos do manifesto.</td>
+                                <td>Paid / Shared / Owned | Relatórios de anúncios, Instagram e TikTok Insights.</td>
+                                <td>Semanal (mídia) e quinzenal (interações).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sustentação</strong></td>
+                                <td>Participantes únicos, taxa de conclusão do desafio, tempo de permanência, depoimentos, matérias regionais e interações nos Stories.</td>
+                                <td>Earned / Shared / Owned | Fichas de campo, Instagram e TikTok Insights, clipping.</td>
+                                <td>Registro diário nos 4 dias de visita; consolidação semanal.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Reforço</strong></td>
+                                <td>Acessos ao site, visitas à página de Projetos Integradores, tempo médio na página e buscas orgânicas pelo nome da instituição.</td>
+                                <td>Owned / Earned | Google Analytics, Search Console e pesquisa pós-campanha.</td>
+                                <td>Semanal; pesquisa final após o reforço.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="alert ok">
+                <b>Observação Importante</b>
+                Os resultados de cada canal dependem do acesso aos relatórios e da configuração prévia dos instrumentos de coleta. As métricas de apoio não substituem a pesquisa de percepção de marca.
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- CONTEÚDO DA ABA 2: METODOLOGIA            -->
+        <!-- ========================================= -->
+        <div id="metodologia" class="tab-content">
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">Como o KPI será calculado</h3>
+                <p style="font-family: sans-serif; font-size: 15px; color: var(--cinza-texto); margin-bottom: 15px;">
+                    A pesquisa de associação espontânea será aplicada antes do início da divulgação e depois da fase de reforço, com a mesma pergunta aberta e os mesmos critérios de classificação. A coleta será realizada nas duas escolas participantes.
+                </p>
+                
+                <p style="font-family: sans-serif; font-size: 15px; font-weight: bold; margin-bottom: 5px;">Pergunta de pesquisa:</p>
+                <blockquote>
+                    "Quando você pensa em uma aula da UniAmérica, o que imagina que o aluno faz?"
+                </blockquote>
+
+                <p style="font-family: sans-serif; font-size: 15px; color: var(--cinza-texto); margin-bottom: 15px;">
+                    A avaliação compara os mesmos estudantes, identificados por código anônimo. Serão consideradas associações positivas as respostas que mencionarem desenvolver Projetos Integradores ou investigar e testar soluções para problemas. Referências genéricas à "prática" não bastam, isoladamente. Respostas "não sei" ou sem associação permanecem no denominador.
+                </p>
+
+                <p style="font-family: sans-serif; font-size: 15px; color: var(--preto); background: var(--cinza-bg); padding: 10px; border-radius: 6px; font-weight: bold;">
+                    Variação do KPI (p.p.) = associação espontânea final (%) – associação espontânea inicial (%)
+                </p>
+                
+                <p style="font-family: sans-serif; font-size: 15px; color: var(--cinza-texto); margin-top: 15px;">
+                    Em cada aplicação: associação espontânea (%) = respostas positivas ÷ total de estudantes com respostas pareadas nas duas aplicações × 100. O KPI é a diferença entre os percentuais final e inicial. Resultados restritos ao grupo pesquisado; sem generalização para a região.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">Justificativa da escolha do indicador</h3>
+                <p style="font-family: sans-serif; font-size: 15px; color: var(--cinza-texto); margin-bottom: 15px;">
+                    A campanha procura fazer com que os estudantes associem a UniAmérica ao aprendizado por projetos. Por isso, o KPI principal mede a mudança dessa associação espontânea entre o início e o encerramento da comunicação. A pesquisa permite verificar se a ideia aparece nas respostas dos estudantes sem que a metodologia seja apresentada previamente.
+                </p>
+                <p style="font-family: sans-serif; font-size: 15px; color: var(--cinza-texto); margin-bottom: 15px;">
+                    A escolha está ligada ao fio condutor "O que você quer provar?": a campanha apresenta projetos, experiências e relatos que tornam visível o aprendizado. Alcance, interações, participação no estande e visitas ao site ajudam a entender o contato do público com as ações, mas, isoladamente, não comprovam uma mudança de percepção.
+                </p>
+                <div class="alert">
+                    <b>Atenção</b>
+                    Não serão usados leads ou matrículas como KPIs porque a proposta é de construção de marca, e esses resultados dependem também de mensalidades, bolsas e decisões individuais. Curtidas, seguidores e visualizações podem ser acompanhados como métricas de apoio, nunca como indicador principal. Esta entrega não estabelece metas numéricas nem benchmarks.
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================= -->
+        <!-- CONTEÚDO DA ABA 3: DECLARAÇÕES            -->
+        <!-- ========================================= -->
+        <div id="declaracoes" class="tab-content">
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">Declaração de uso de Inteligência Artificial</h3>
+                <p style="font-family: sans-serif; font-size: 15px; color: var(--cinza-texto); margin-bottom: 15px;">
+                    <strong>Ferramentas:</strong> ChatGPT (OpenAI) e Gemini (Google), conforme informado pelas integrantes. <br><br>
+                    Apoiaram a revisão dos textos, a organização da tabela, o agrupamento das métricas de apoio por fase e quadrante PESO e a conferência de coerência entre as entregas. A definição do objetivo, a escolha do KPI e as decisões de pesquisa e de conteúdo cabem ao grupo.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">Base e Referências</h3>
+                <p style="font-family: sans-serif; font-size: 15px; color: var(--cinza-texto); margin-bottom: 15px;">
+                    Base: Entregas 01 e 02; Parte 3 corrigida (Luana); Parte 2 revisada (Emilly, última versão). Apresentação monocromática para leitura acadêmica; a identidade visual da campanha permanece definida no planejamento.
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Painel de Monitoramento UniAmérica</strong> · Documento alinhado à Entrega 03</p>
+        </footer>
+    </main>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>
